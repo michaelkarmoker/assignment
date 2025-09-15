@@ -82,18 +82,7 @@ class DioClient {
         log("Response body===>${data.toString()}");
       }
 
-      final decoded = jsonDecode(response?.data);
-      final statusCode = int.parse(decoded['statusCode'].toString());
-      print("status");
-      print(statusCode);
-      if(statusCode!=200&&!uri.contains("login")){
-        print("in status");
-        print(statusCode);
-       response.statusCode=statusCode;
-       throw DioException.badResponse(statusCode: statusCode, requestOptions: RequestOptions(), response: response);
-      }
 
-      print(response.statusCode);
       return response;
     } on FormatException catch (_) {
       throw const FormatException("Unable to process the data");
@@ -175,58 +164,7 @@ class DioClient {
     }
   }
 
-  Future<Response> uploadMultipartFiles(
-      String uri, {
-        required List<String> filePaths,
-        required String fileKeyName,
-        required Map<String, dynamic> fields,
-        Map<String, dynamic>? additionalHeaders,
-        Options? options,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-        CancelToken? cancelToken,
-      }) async {
-    try {
-      final mergedOptions = buildRequestOptions(
-        additionalHeaders: additionalHeaders,
-        baseOptions: options,
-      );
-      List<MultipartFile> multipartFiles = [];
 
-      for (var path in filePaths) {
-        final file = await MultipartFile.fromFile(
-          path,
-          filename: path.split('/').last,
-        );
-        multipartFiles.add(file);
-      }
-
-      final formData = FormData.fromMap({
-        fileKeyName: multipartFiles,
-        ...fields, // e.g., title, price etc.
-      });
-
-      if (kDebugMode) {
-        log("Uploading files: $filePaths");
-        log("With fields: $fields");
-      }
-
-      final response = await dio!.post(
-        uri,
-        data: formData,
-        cancelToken: cancelToken,
-        options: mergedOptions,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-
-      return response;
-    } on FormatException catch (_) {
-      throw const FormatException("Unable to process the data");
-    } catch (e) {
-      rethrow;
-    }
-  }
 
   Options buildRequestOptions({
     Map<String, dynamic>? additionalHeaders,

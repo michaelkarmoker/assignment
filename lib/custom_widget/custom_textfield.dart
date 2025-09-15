@@ -26,6 +26,7 @@ class CustomTextField extends StatefulWidget {
   final int? miniLine;
   final TextCapitalization capitalization;
   final double? borderRadius;
+  final double? bottomPadding;
   final Icon? prefixIcon;
   final String? suffixIcon;
   final bool showBorder;
@@ -59,6 +60,7 @@ class CustomTextField extends StatefulWidget {
     this.inputType = TextInputType.text,
     this.inputAction = TextInputAction.next,
     this.maxLines,
+    this.bottomPadding,
     this.miniLine,
     this.onChanged,
     this.hintStyle,
@@ -104,7 +106,7 @@ class _CustomTextFormFiledState extends State<CustomTextField> {
             widget.textHeading!,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontSize: 16,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(height: 5.h),
@@ -148,7 +150,7 @@ class _CustomTextFormFiledState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
               borderSide: BorderSide(
                 width: 1,
-                color: widget.enabledBorderColor ?? AppColors.border2,
+                color: widget.enabledBorderColor ?? Colors.grey.shade400,
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -162,7 +164,7 @@ class _CustomTextFormFiledState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
               borderSide: BorderSide(
                 width: 1,
-                color: widget.disableBorderColor ?? Colors.grey.shade400,
+                color: widget.disableBorderColor ?? Colors.grey.shade200,
               ),
             ),
             errorBorder: OutlineInputBorder(
@@ -257,7 +259,7 @@ class _CustomTextFormFiledState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           onTap: widget.onTap,
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: widget.bottomPadding??10.h),
       ],
     );
   }

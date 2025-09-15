@@ -14,12 +14,12 @@ class ShoppingRepository {
 
   ShoppingRepository({required this.dioClient});
 
-  Future<ApiResponse> getCategoryList( int page) async {
+  Future<ApiResponse> getAddressList( ) async {
     try {
 
 
       Response response = await dioClient.get(
-        AppConstants.categoryList+"?page=$page",
+       AppConstants.getMemberAddress+"/1004",
 
 
 
@@ -34,8 +34,54 @@ class ShoppingRepository {
 
 
 
+  Future<ApiResponse> getCountries( ) async {
+    try {
 
 
+      Response response = await dioClient.get(
+        AppConstants.getAllCountries,
+
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(
+        ApiErrorHandler.handle(e, "getCountries",  ),
+      );
+    }
+  }
+
+
+  Future<ApiResponse> getCities(  ) async {
+    try {
+
+
+      Response response = await dioClient.get(
+        AppConstants.getAllCities ,
+
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(
+        ApiErrorHandler.handle(e, "getCities",  ),
+      );
+    }
+  }
+
+  Future<ApiResponse> getCitiesByCountryId(String countryId ) async {
+    try {
+
+
+      Response response = await dioClient.get(
+        AppConstants.getCitiesByCountry+"/$countryId",
+
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(
+        ApiErrorHandler.handle(e, "getCities",  ),
+      );
+    }
+  }
 
 
 

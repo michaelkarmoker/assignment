@@ -6,6 +6,8 @@ class CustomDropdownField<T> extends StatelessWidget {
   final String? hintText;
   final String? textHeading;
   final bool required;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocus;
   final T? selectedValue;
   final List<T> items;
   final Function(T?)? onChanged;
@@ -20,6 +22,8 @@ class CustomDropdownField<T> extends StatelessWidget {
     this.labelText,
     this.hintText,
     this.textHeading,
+    this.focusNode,
+    this.nextFocus,
     this.required = false,
     this.selectedValue,
     required this.items,
@@ -40,13 +44,15 @@ class CustomDropdownField<T> extends StatelessWidget {
             textHeading!,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontSize: 16,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(height: 5.h),
         ],
         DropdownButtonFormField<T>(
           value: selectedValue,
+          focusNode:focusNode ,
+
           // selectedItemBuilder: (context){
           //   return items.map((e) => Text(
           //     itemAsString?.call(e) ?? e.toString(),
@@ -66,7 +72,11 @@ class CustomDropdownField<T> extends StatelessWidget {
             ),
           ))
               .toList(),
-          onChanged: onChanged,
+          onChanged: (v){
+            if(onChanged!=null){onChanged!(v) ;}
+            if(nextFocus!=null){       FocusScope.of(  context ).requestFocus(nextFocus);}
+
+          },
           decoration: InputDecoration(
             isDense: true,
             hintText: hintText ?? "Select option",
@@ -79,7 +89,7 @@ class CustomDropdownField<T> extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
               borderSide: BorderSide(
-                color: enabledBorderColor ?? Colors.grey.shade300,
+                color: enabledBorderColor ?? Colors.grey.shade400,
                 width: 1,
               ),
             ),
