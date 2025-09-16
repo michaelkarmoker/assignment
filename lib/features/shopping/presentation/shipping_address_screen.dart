@@ -1,21 +1,23 @@
 import 'package:assignment/core/enums/enums.dart';
 import 'package:assignment/custom_widget/custom_button.dart';
+import 'package:assignment/custom_widget/custom_snackbar.dart';
 import 'package:assignment/custom_widget/custom_textfield.dart';
-import 'package:assignment/features/shopping/presentation/payment_screen.dart';
-import 'package:assignment/features/shopping/presentation/widgets/address_edit_bottomSheet.dart';
+import 'package:assignment/features/shopping/model/CityListResponse.dart';
+import 'package:assignment/features/shopping/model/CountryListResponse.dart';
+import 'package:assignment/features/shopping/presentation/shipping_address_list_screen.dart';
 import 'package:assignment/features/shopping/presentation/widgets/step_item_widget.dart';
 import 'package:assignment/styles/app_colors.dart';
+import 'package:assignment/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../custom_widget/custom_drop_down.dart';
-import '../../../custom_widget/custom_loader.dart';
-import '../../../dialogs/custom_dialog.dart';
+import '../../../custom_widget/custom_phoneField.dart';
 import '../../../main.dart';
 import '../logic/shopping_cubit.dart';
-import '../model/Address.dart';
 
 class ShippingAddressScreen extends StatefulWidget {
   ShippingAddressScreen({super.key});
@@ -30,203 +32,327 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (mounted) {
-      Get.context!.read<ShoppingCubit>().getAddressList();
+    if(mounted){
+      Get.context!.read<ShoppingCubit>().setAddressType(AddressType.existing_address.toString());
       Get.context!.read<ShoppingCubit>().getCountryList();
       Get.context!.read<ShoppingCubit>().getCityList();
+
+
     }
   }
 
+  FocusNode firstNameFcs=FocusNode();
+
+  FocusNode lastNameFcs=FocusNode();
+
+  FocusNode emailFcs=FocusNode();
+
+  FocusNode phnFcs=FocusNode();
+
+  FocusNode streetAddressFcs=FocusNode();
+
+  FocusNode buildingNumberFcs=FocusNode();
+
+  FocusNode cityFcs=FocusNode();
+
+  FocusNode postCodeFcs=FocusNode();
+
+   FocusNode countryFcs=FocusNode();
+
+   FocusNode regionFcs=FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shipping Address List'),
+        title: Text('Shopping List'),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Stepper Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                StepItemWidget(isSelect: true,
-                    icon: Icons.shopping_cart,
-                    title: "Shopping Cart"),
-                Container(height: 2, width: 40, color: AppColors.primary),
-                StepItemWidget(isSelect: true,
-                    icon: Icons.location_on,
-                    title: "Shipping Address"),
-                Container(height: 2, width: 40, color: AppColors.primary),
-                StepItemWidget(
-                    isSelect: false, icon: Icons.money, title: "Payment"),
-
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(child: _buildAddressList()),
-            SizedBox(height: 10.h,),
-            Row(
-              spacing: 10.w,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                      buttonType: ButtonType.secondary,
-                      borderRadius: 6.r,
-                      onTap: (){
-                       Navigator.of(context).pop();
-                      }, buttonText: "Back"),
-                ),Expanded(
-                  child: CustomButton(
-                      borderRadius: 6.r,
-                      onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PaymentScreen()));
-
-                      }, buttonText: "Continue"),
-                )
-              ],
-            ),
-            SizedBox(height: 10.h,),
-
-
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding:  EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.w),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              // Stepper Header
+              StepItemWidget(step: 2,),
+              const SizedBox(height: 20),
+        
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildForm(),
+                    ],
+                  ),
+                ),
+              )
+        
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildAddressList() {
+  Widget _buildForm(){
     return BlocBuilder<ShoppingCubit, ShoppingState>(
-      builder: (context, state) {
-        if(state.loading){
-          return Center(child: CustomLoader(size: 40.w,));
-        }
-        return ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount:state.addressList?.length??0,
-          itemBuilder: (context, index) {
-            Address address=state.addressList![index];
-            return GestureDetector(
-              onTap: (){
-                Get.context!.read<ShoppingCubit>().setAddresss(address);
-              },
-              child: Container(
-                margin: EdgeInsets.only(bottom: 10.w),
-                padding: EdgeInsets.all(10.w),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: (state.selectedAddress?.memberShippingAddressId??0)==address.memberShippingAddressId?AppColors.primary:AppColors.gray.withOpacity(0.1),
-                     width: 1.w
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  color: AppColors.primary.withOpacity(0.1)
+  builder: (context, state) {
+    return Form(
+      key:  Get.context!.read<ShoppingCubit>().shippingAddressFormKey,
+      child: Column(
+        children: [
+          CustomTextField(
+            textHeading: "First Name",
+            hintText: "Enter your first name",
+            controller: Get.context!.read<ShoppingCubit>().firstNameCtr,
+            focusNode:firstNameFcs ,
+            nextFocus: lastNameFcs,
+            validator: Validators.requiredValidator.call,
+          ),
+          CustomTextField(
+            textHeading: "Last Name",
+            hintText: "Enter your last name",
+            controller: Get.context!.read<ShoppingCubit>().lastNameCtr,
+            focusNode:lastNameFcs ,
+            nextFocus: emailFcs,
+            validator: Validators.requiredValidator.call,
+          ),
+          CustomTextField(
+            textHeading: "Email Address",
+            hintText: "Enter your email address",
+            controller: Get.context!.read<ShoppingCubit>().emailCtr,
+            validator: Validators.emailValidator.call,
+            focusNode:emailFcs ,
+            inputType: TextInputType.emailAddress,
+            nextFocus: phnFcs,
+          ),
+          CustomPhoneField(
+            textHeading: "Phone Number",
+            hintText: "Enter your phone number",
+            controller: Get.context!.read<ShoppingCubit>().phoneNumberCtr,
+            phonCodeController: Get.context!.read<ShoppingCubit>().phoneCodeCtr,
+            focusNode:phnFcs ,
+            inputType: TextInputType.phone,
+            initialCountryCode: 'AE',
+            onChanged: (phone){
+
+            },
+            nextFocus: streetAddressFcs,
+            validator: Validators.phoneValidator.call,
+          ),
+
+
+          // CustomTextField(
+          //   textHeading: "Phone Number",
+          //   hintText: "Enter your phone number",
+          //   controller: Get.context!.read<ShoppingCubit>().phoneNumberCtr,
+          //   focusNode:phnFcs ,
+          //   nextFocus: streetAddressFcs,
+          //   validator: Validators.phoneValidator.call,
+          // ),
+          CustomTextField(
+            textHeading: "Street Address",
+            hintText: "Write your street address",
+            controller: Get.context!.read<ShoppingCubit>().streetAddressCtr,
+            focusNode:streetAddressFcs ,
+            nextFocus: buildingNumberFcs,
+            validator: Validators.requiredValidator.call,
+          ),
+          CustomTextField(
+            textHeading: "Building Name",
+            hintText: "Write your building name",
+            controller: Get.context!.read<ShoppingCubit>().buildingNumberCtr,
+            focusNode:buildingNumberFcs ,
+
+            nextFocus: null,
+          ),
+
+          Row(
+            spacing: 10.w,
+            mainAxisAlignment: MainAxisAlignment.end,
+
+            children: [
+              Expanded(
+
+                child: CustomDropdownField<City>(items: state.cityList??[],textHeading: "City",
+                focusNode: cityFcs,
+
+                hintText: "Select a City",
+                selectedValue: state.selectedCity,
+                required: true,
+                  itemAsString:(City v){
+                    return v.cityName ?? "";
+                  },
+                onChanged: (v){
+
+                  Get.context!.read<ShoppingCubit>().setCity(v);
+                },
                 ),
+              ),
+              Expanded(
+                child: CustomTextField(
+                  bottomPadding: 0,
+                   verticalPadding: 11.w,
+                  textHeading: "Post Code",
+                  hintText: "Enter post code",
+                  controller: Get.context!.read<ShoppingCubit>().postCodeCtr,
+                  focusNode:postCodeFcs ,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h,),
+          Row(
+            spacing: 10.w,
+            children: [
+              Expanded(
+                child: CustomDropdownField<CountryData>(items: state.countryList??[],textHeading: "Country",
+                  focusNode: countryFcs,
+                  selectedValue: state.selectedCountry,
+                  required: true,
+                  hintText: "Select a Country",
+                  itemAsString:(CountryData v){
+                    return v.countryName ?? "";
+                  },
+                  onChanged: (v){
+                   Get.context!.read<ShoppingCubit>().setCountry(v);
+
+                  },
+                ),
+              ),
+              Expanded(
+                child: CustomTextField(
+                  bottomPadding: 0,
+                  verticalPadding: 11.w,
+                  textHeading: "Region/State",
+                  hintText: "Enter Region/State",
+                  controller: Get.context!.read<ShoppingCubit>().regionCtr,
+                  focusNode:regionFcs ,
+                  nextFocus: null,
+                ),
+              ),
+
+            ],
+          ),
+          SizedBox(height: 10.h,),
+          Row(
+            children: [
+              Expanded(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 9,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${address.firstName} ${address.lastName}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize:16.sp
-                          ),),
-                          SizedBox(height: 5.h,),
-                          Row(
-                            spacing: 5.w,
-                            children: [
-                              Icon(Icons.phone,color: Colors.black,size: 20.w,),
-                              Text("${address?.mobileNo??""}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400,
-                              ),),
-                            ],
-                          ),
-                          SizedBox(height: 5.h,),
-                          Row(
-                            spacing: 5.w,
-                            children: [
-                              Icon(Icons.email,color: Colors.black,size: 20.w,),
-                              Text("${address?.email??""}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400,
-                              ),),
-                            ],
-                          ),
-                          SizedBox(height: 5.h,),
-                          Row(
-                            spacing: 5.w,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(Icons.home,color: Colors.black,size: 20.w,),
-                              Expanded(
-                                child: Text("${address?.addressLine1??""}, ${address?.addressLine2??""}, ${address?.city?.cityName??""}, ${address?.country?.countryName??""}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black54
-                                ),),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    SizedBox(
+                      width: 25.w,
+                      child: Radio(
+                        activeColor: Theme.of(context).primaryColor,
+
+                          value: AddressType.existing_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
+                        Get.context!.read<ShoppingCubit>().setAddressType(value);
+                      }),
                     ),
                     Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                            child: Radio(
-                                activeColor: AppColors.primary,
-                                value: address.memberShippingAddressId, groupValue: state.selectedAddress?.memberShippingAddressId, onChanged: (v){
-                              Get.context!.read<ShoppingCubit>().setAddresss(address);
-
-                            }),
-                          ),
-                          SizedBox(height: 20.h,),
-                          Row(
-                            children: [
-
-
-
-                              GestureDetector(
-                                  onTap: (){
-                                    CustomAlertDialog.show("Are you sure you want to delete this?",onPressed: (){
-
-                                      Get.context!.read<ShoppingCubit>().deleteAddress(address.memberShippingAddressId.toString());
-                                      Navigator.of(context).pop();
-
-                                    },);
-                                  },
-                                  child: Icon(Icons.delete,size: 20.w,color: AppColors.primary,)),
-                              SizedBox(width: 20.h,),
-                              GestureDetector(
-                                  onTap: (){
-                                    Get.context!.read<ShoppingCubit>().editAddress(address);
-
-                                  },
-                                  child: Icon(Icons.edit,size: 20.w,color: AppColors.primary,)),
-                            ],
-                          ),
-
-
-                        ],
-                      ),
+                      child: Text("Use An Existing Address",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500
+                      ),),
                     )
                   ],
                 ),
               ),
-            );
-          },);
-      },
+              Expanded(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 25.w,
+                      child: Radio(
+
+                          activeColor: Theme.of(context).primaryColor,
+                          value: AddressType.new_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
+                        Get.context!.read<ShoppingCubit>().setAddressType(value);
+                      }),
+                    ),
+                    Expanded(
+                      child: Text("Use a New Address",style:
+                      Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500
+                      )),
+                    )
+                  ],
+                ),
+              ),
+
+
+
+            ],
+          ),
+          SizedBox(height: 10.h,),
+          Row(
+            spacing: 10.w,
+            children: [
+              Expanded(
+                child: CustomButton(
+                    buttonType: ButtonType.secondary,
+                    borderRadius: 6.r,
+                    onTap: (){
+
+                }, buttonText: "Back"),
+              ),Expanded(
+                child: CustomButton(
+                  loading: state.loading,
+                    borderRadius: 6.r,
+                    onTap: (){
+                      FocusScope.of(context).unfocus();
+                      if(state.selectedAddressType==AddressType.new_address.toString()){
+                        if( Get.context!.read<ShoppingCubit>().shippingAddressFormKey.currentState!.validate()){
+                          Get.context!.read<ShoppingCubit>().createNewAddress();
+                        }
+
+                      }else if(state.selectedAddressType==AddressType.existing_address.toString()) {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ShippingAddressListScreen()));
+                      }
+
+
+                }, buttonText: "Continue"),
+              )
+            ],
+          ),
+
+
+          ]),
+    );
+  },
+);
+  }
+
+  Widget _buildAddressList(){
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: 3,
+      itemBuilder: (context,index){
+      return Container();
+    },);
+  }
+
+  Widget _buildStep({required bool isSelect,required IconData icon,required String title}){
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            border: Border.all(color:isSelect?AppColors.primary:AppColors.gray,width: 1),
+            color: isSelect?AppColors.primary:AppColors.white,
+            borderRadius: BorderRadius.circular(50.r),
+          ),
+          child: Icon(icon,size: 20.w,color: isSelect?AppColors.white:AppColors.primary,)
+        ),
+        SizedBox(height: 10.h,),
+        Text("${title}",style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
+          color: isSelect?AppColors.black:AppColors.gray,
+          fontWeight: isSelect?FontWeight.w500:FontWeight.w400,
+
+        ),)
+      ],
     );
   }
 }

@@ -7,13 +7,7 @@ class Images{
  static const String account ='assets/icon/user.png';
 
 
- ///icon of audio_player
-
- static const String addIcon = 'assets/icons/add.png';
- static const String cartIcon = 'assets/icons/cart.png';
- static const String cartIconBold = 'assets/icons/cart_bold.png';
- static const String suffleIcon = 'assets/icons/suffle.png';
- static const String removeIcon = 'assets/icons/remove.png';
- static const String playNextIcon = 'assets/icons/play_next.png';
+/// logo
+ static const String logo ='assets/image/logo.png';
 
 }

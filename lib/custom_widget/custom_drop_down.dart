@@ -52,7 +52,8 @@ class CustomDropdownField<T> extends StatelessWidget {
           SizedBox(height: 5.h),
         ],
         DropdownButtonFormField<T>(
-          value: selectedValue,
+          isExpanded: true,
+          value: items.contains(selectedValue) ? selectedValue : null,
           focusNode:focusNode ,
           validator:  validator ??
               (required
@@ -62,7 +63,7 @@ class CustomDropdownField<T> extends StatelessWidget {
           // selectedItemBuilder: (context){
           //   return items.map((e) => Text(
           //     itemAsString?.call(e) ?? e.toString(),
-          //     maxLines: 1,
+          //     maxLines: 2,
           //     overflow: TextOverflow.ellipsis,
           //     style: Theme.of(context).textTheme.bodyMedium,
           //   )).toList();

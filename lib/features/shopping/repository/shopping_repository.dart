@@ -70,8 +70,9 @@ class ShoppingRepository {
   ///========edit address==============
   Future<ApiResponse> updateAddress(AddressRequest addressRequest) async {
     try {
+      int shippingAddressId=addressRequest.memberShippingAddressId??0;
       Response response = await dioClient.put(
-        AppConstants.editAddress+"/$addressRequest.memberShippingAddressId",
+        AppConstants.editAddress+"/$shippingAddressId",
         data: addressRequest.toJson()
       );
       return ApiResponse.withSuccess(response);

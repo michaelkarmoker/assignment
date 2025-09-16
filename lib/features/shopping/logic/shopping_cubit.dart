@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:assignment/features/shopping/model/Address.dart';
 import 'package:assignment/features/shopping/model/CountryListResponse.dart';
-import 'package:assignment/features/shopping/presentation/shipping_address_screen.dart';
+import 'package:assignment/features/shopping/presentation/shipping_address_list_screen.dart';
 import 'package:assignment/features/shopping/repository/shopping_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:canopas_country_picker/canopas_country_picker.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 
 
 import 'package:meta/meta.dart';
@@ -19,7 +22,7 @@ import '../../../main.dart';
 import '../../../utils/appconstant.dart';
 import '../model/AddressRequest.dart';
 import '../model/CityListResponse.dart';
-import '../presentation/shopping_screen.dart';
+
 import '../presentation/widgets/address_edit_bottomSheet.dart';
 
 
@@ -106,7 +109,7 @@ setAddressType(String? addressType){
          String message=apiResponse?.response?.data["message"];
          showSnackBar(message,isError: false);
          emit(state.copyWith(loading: false ));
-         Navigator.push(Get.context!, MaterialPageRoute(builder: (context)=>ShippingAddressScreen()));
+         Navigator.push(Get.context!, MaterialPageRoute(builder: (context)=>ShippingAddressListScreen()));
       }catch(e){
         emit(state.copyWith(loading: false));
         showSnackBar(e.toString(),mustShowInReleaseMode: false);
@@ -155,13 +158,13 @@ setAddressType(String? addressType){
 
 
   ///=========Create Address============
-  Future<void> updateAddress( ) async {
+  Future<void> updateAddress(Address address ) async {
 
     emit(state.copyWith(loading: true));
 
 
     AddressRequest addressRequest=AddressRequest(
-      memberShippingAddressId: state.selectedAddress?.memberShippingAddressId??0,
+      memberShippingAddressId: address?.memberShippingAddressId??0,
       memberId:memberId ,
       firstName: firstNameCtr.text,
       lastName: lastNameCtr.text,
@@ -290,16 +293,30 @@ setAddressType(String? addressType){
 
 
   void clearControllers() {
-
+    firstNameCtr.clear();
+    lastNameCtr.clear();
+    emailCtr.clear();
+    phoneNumberCtr.clear();
+    phoneCodeCtr.clear();
+    streetAddressCtr.clear();
+    buildingNumberCtr.clear();
+    postCodeCtr.clear();
+    setCity(City());
+    setCountry(CountryData());
     }
 
 
   @override
   void clear() {
+    clearControllers();
     emit(ShoppingState());
   }
 
-  void editAddress(Address address) {
+  void insertAddress(Address address) {
+
+
+     // Example Alpha-2 code for the United States
+
     firstNameCtr.text=address.firstName??"";
     lastNameCtr.text=address.lastName??"";
     emailCtr.text=address.email??"";
@@ -308,9 +325,14 @@ setAddressType(String? addressType){
     streetAddressCtr.text=address.addressLine1??"";
     buildingNumberCtr.text=address.addressLine2??"";
     postCodeCtr.text=address.zipCode??"";
-    setCity(address.city);
-    setCountry(address.country);
-    AddressEditDialog.showEditBottomSheet(context: Get.context!);
+    City selectedCity=City(cityId: address.cityId,cityName: address.city?.cityName,arabicCityName: address.city?.arabicCityName );
+    CountryData selectedCountry=CountryData(countryId: address.countryId,countryKey: address.country?.countryKey,countryName: address.country?.countryName,);
+
+    emit(state.copyWith(selectedCity:selectedCity ,selectedCountry: selectedCountry));
+
+    AddressEditDialog.showEditBottomSheet(context: Get.context!,address: address).then((onvalue){
+      clearControllers();
+    });
 
 
   }

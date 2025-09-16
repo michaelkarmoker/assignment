@@ -47,6 +47,7 @@ dependencies:
   flutter_svg: ^2.0.17
   shared_preferences: ^2.2.2
   flutter_intl_phone_field: ^0.0.7
+  canopas_country_picker: ^0.0.10
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
 
   assets:
     - assets/icon/
+    - assets/image/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

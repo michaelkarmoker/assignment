@@ -1,13 +1,13 @@
 class City {
-  final int cityId;
-  final String cityName;
-  final String arabicCityName;
+  final int? cityId;
+  final String? cityName;
+  final String? arabicCityName;
 
 
   City({
-    required this.cityId,
-    required this.cityName,
-    required this.arabicCityName
+      this.cityId,
+      this.cityName,
+      this.arabicCityName
   });
 
   factory City.fromJson(Map<String, dynamic> json) {
@@ -25,4 +25,11 @@ class City {
       "arabicCityName": arabicCityName
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is City && cityId == other.cityId);
+
+  @override
+  int get hashCode => cityId.hashCode;
 }

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:canopas_country_picker/canopas_country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
@@ -90,6 +91,7 @@ class _CustomTextFormFiledState extends State<CustomPhoneField> {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -104,7 +106,12 @@ class _CustomTextFormFiledState extends State<CustomPhoneField> {
           SizedBox(height: 5.h),
         ],
         IntlPhoneField(
-          initialCountryCode:widget.initialCountryCode ,
+
+          initialCountryCode:widget.initialCountryCode??CountryCode.getCountryCodeByDialCode(
+    dialCode:widget.phonCodeController?.text??""
+
+    ).code,
+
           textAlignVertical: TextAlignVertical.top,
           textAlign: TextAlign.start,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -113,6 +120,11 @@ class _CustomTextFormFiledState extends State<CustomPhoneField> {
               widget.phonCodeController!.text="+"+v.fullCountryCode;
             }
 
+          },
+          onChanged: (v){
+            if(widget.phonCodeController!=null){
+              widget.phonCodeController!.text= v.countryCode;
+            }
           },
           maxLines: widget.maxLines ?? 1,
           minLines: widget.miniLine ?? 1,

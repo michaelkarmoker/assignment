@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:assignment/features/shopping/logic/shopping_cubit.dart';
 import 'package:assignment/styles/themes.dart';
 import 'package:assignment/utils/di.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +19,7 @@ import 'features/splash/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
+
   runApp(const MyApp());
 }
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

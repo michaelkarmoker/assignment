@@ -7,8 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import '../../main.dart';
 import '../../utils/images.dart';
 import '../home/presentation/home_screen.dart';
+
 import '../shopping/presentation/shipping_address_screen.dart';
-import '../shopping/presentation/shopping_screen.dart';
 import 'logic/navbar_cubit.dart';
 
 class NavBarScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _NavBarScreenState extends State<NavBarScreen> {
   List<Widget> _screens = [
     HomeScreen(),
     CategoryScreen(),
-    ShoppingScreen(),
+    ShippingAddressScreen(),
     AccountScreen(),
 
 

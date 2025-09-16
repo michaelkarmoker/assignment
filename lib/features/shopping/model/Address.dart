@@ -85,7 +85,7 @@ class Address {
   String? lastUpdated;
   City? city;
   CountryData? country;
-  bool isSelect=false;
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

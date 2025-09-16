@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../main.dart';
 import '../../styles/app_colors.dart';
+import '../../utils/images.dart';
 import '../nav_bar/nav_bar_screen.dart';
 
 
@@ -33,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppColors.white, AppColors.splashBg],
+            colors: [AppColors.white, AppColors.white],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -44,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Hero(
               tag: 'logoHero',
               child: Image.asset(
-                'assets/icon/logo.png',
+                Images.logo,
                 width: 200.w,
                 height: 200.h,
               ),

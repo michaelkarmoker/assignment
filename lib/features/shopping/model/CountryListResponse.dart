@@ -50,30 +50,36 @@ class CountryData {
       this.countryId, 
       this.countryKey, 
       this.countryName, 
-      this.iso, 
-      this.flag,});
+
+      });
 
   CountryData.fromJson(dynamic json) {
     countryId = json['countryId'];
     countryKey = json['countryKey'];
     countryName = json['countryName'];
-    iso = json['iso'];
-    flag = json['flag'];
+
   }
   int? countryId;
   String? countryKey;
   String? countryName;
-  dynamic iso;
-  String? flag;
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['countryId'] = countryId;
     map['countryKey'] = countryKey;
     map['countryName'] = countryName;
-    map['iso'] = iso;
-    map['flag'] = flag;
+
     return map;
   }
+
+  // Override equality
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is CountryData && countryId == other.countryId;
+
+  @override
+  int get hashCode => countryId.hashCode;
 
 }
