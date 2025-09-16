@@ -65,4 +65,9 @@ enum ImageType {
   asset
 }
 
+enum AddressType {
+  new_address,
+  existing_address
+
+}
 

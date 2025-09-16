@@ -1,3 +1,4 @@
+import 'package:assignment/core/enums/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,7 @@ import '../styles/app_colors.dart';
 
 GlobalKey _LocationServiceAlertKey = GlobalKey();
 
-class CustomDialog {
+class CustomAlertDialog {
   static Future<void> show(
       String msg, {
         VoidCallback? onPressed,
@@ -25,21 +26,15 @@ class CustomDialog {
     await showDialog(
       barrierDismissible: false,
       context: Get.context!,
+
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           key: _LocationServiceAlertKey,
-          // title: LocaleText('Opps!',
-          //     style: GoogleFonts.roboto(
-          //         fontWeight: FontWeight.w400,
-          //         color: const Color(0xff000000),
-          //         fontSize: 20.sp)),
+
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 10.h),
-              // isSuccess
-              //     ? SuccessContainer(width: 70.w, height: 70.w)
-              //     : AppLogo(width: 70.w, height: 70.w),
               SizedBox(height: 10.h),
               Padding(
                 padding: EdgeInsets.all(6.w),
@@ -63,17 +58,29 @@ class CustomDialog {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      buttonText: 'Okay',
+                      buttonType: ButtonType.secondary,
+                      buttonText: 'Cancel',
                       onTap: () async {
                         if (onPressed != null) {
-                          onPressed();
-                        }
-                        if (isAutoPop) {
                           Navigator.of(Get.context!).pop();
                         }
                       },
                       height: 30.h,
-                      width: 75.w,
+                      borderRadius: 6.r,
+                    ),
+                  ),
+                  SizedBox(width: 20.w,),
+                  Expanded(
+                    child: CustomButton(
+                      buttonText: 'Confirm',
+                      onTap: () async {
+                        if (onPressed != null) {
+                          onPressed();
+                        }
+
+                      },
+                      height: 30.h,
+                      borderRadius: 6.r,
                     ),
                   ),
                 ],

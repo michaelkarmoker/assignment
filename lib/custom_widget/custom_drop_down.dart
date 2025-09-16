@@ -14,6 +14,7 @@ class CustomDropdownField<T> extends StatelessWidget {
   final Color? enabledBorderColor;
   final Color? focusBorderColor;
   final double? borderRadius;
+  final FormFieldValidator<T>? validator;
   final String Function(T)? itemAsString;
 
 
@@ -24,6 +25,7 @@ class CustomDropdownField<T> extends StatelessWidget {
     this.textHeading,
     this.focusNode,
     this.nextFocus,
+    this.validator,
     this.required = false,
     this.selectedValue,
     required this.items,
@@ -52,7 +54,11 @@ class CustomDropdownField<T> extends StatelessWidget {
         DropdownButtonFormField<T>(
           value: selectedValue,
           focusNode:focusNode ,
-
+          validator:  validator ??
+              (required
+                  ? (value) =>
+              value == null ? "Please select ${labelText??textHeading??""}" : null
+                  : null),
           // selectedItemBuilder: (context){
           //   return items.map((e) => Text(
           //     itemAsString?.call(e) ?? e.toString(),
@@ -66,7 +72,7 @@ class CustomDropdownField<T> extends StatelessWidget {
             value: e,
             child: Text(
               itemAsString?.call(e) ?? e.toString(),
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium,
             ),

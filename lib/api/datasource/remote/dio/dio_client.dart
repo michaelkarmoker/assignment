@@ -64,6 +64,10 @@ class DioClient {
         ProgressCallback? onReceiveProgress,
       }) async {
     try {
+      if (kDebugMode) {
+        log("Response body===>${data.toString()}");
+      }
+
       final mergedOptions = buildRequestOptions(
         additionalHeaders: additionalHeaders,
         baseOptions: options,
@@ -78,9 +82,7 @@ class DioClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      if (kDebugMode) {
-        log("Response body===>${data.toString()}");
-      }
+
 
 
       return response;
@@ -173,6 +175,7 @@ class DioClient {
 
     Map<String, String> defaultHeaders = {
      AppConstants.contentType: 'application/json; charset=UTF-8',
+      AppConstants.accept: 'application/json',
     };
     additionalHeaders?.forEach((k, v) {
       defaultHeaders[k] = v;
@@ -186,6 +189,7 @@ class DioClient {
 
     Map<String, String> headers = {
       AppConstants.contentType: 'application/json; charset=UTF-8',
+      AppConstants.accept: 'application/json',
     };
     additionalHeaders?.forEach((k, v) {
       headers[k] = v;

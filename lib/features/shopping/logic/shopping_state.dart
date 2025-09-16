@@ -6,7 +6,10 @@ final class ShoppingState extends Equatable {
   final String? selectedAddressType;
   final List<CountryData>? countryList;
   final List<City>? cityList;
-
+  final CountryData? selectedCountry;
+  final City? selectedCity;
+  final List<Address>? addressList;
+  final Address? selectedAddress;
 
 
   const ShoppingState({
@@ -14,6 +17,10 @@ final class ShoppingState extends Equatable {
     this.selectedAddressType,
     this.countryList,
     this.cityList,
+    this.selectedCity,
+    this.selectedCountry,
+    this.addressList,
+    this.selectedAddress
 
 
   });
@@ -23,6 +30,10 @@ final class ShoppingState extends Equatable {
     String? selectedAddressType,
     List<CountryData>? countryList,
     List<City>? cityList,
+    CountryData? selectedCountry,
+    City? selectedCity,
+    List<Address>? addressList,
+    Address? selectedAddress
 
   }) {
     return ShoppingState(
@@ -30,13 +41,17 @@ final class ShoppingState extends Equatable {
       selectedAddressType: selectedAddressType ?? this.selectedAddressType,
       countryList: countryList ?? this.countryList,
       cityList: cityList ?? this.cityList,
+      selectedCity: selectedCity ?? this.selectedCity,
+      selectedCountry: selectedCountry ?? this.selectedCountry,
+      addressList: addressList ?? this.addressList,
+      selectedAddress: selectedAddress ?? this.selectedAddress,
 
       // Added the missing comma here
     );
   }
 
   @override
-  List<Object?> get props => [loading,selectedAddressType,countryList,cityList];
+  List<Object?> get props => [loading,selectedAddressType,countryList,cityList,selectedCity,selectedCountry,addressList,selectedAddress];
 
 
 }
