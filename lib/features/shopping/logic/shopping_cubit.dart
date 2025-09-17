@@ -4,8 +4,7 @@ import 'package:assignment/features/shopping/model/Address.dart';
 import 'package:assignment/features/shopping/model/CountryListResponse.dart';
 import 'package:assignment/features/shopping/presentation/shipping_address_list_screen.dart';
 import 'package:assignment/features/shopping/repository/shopping_repository.dart';
-import 'package:bloc/bloc.dart';
-import 'package:canopas_country_picker/canopas_country_picker.dart';
+
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,6 +77,10 @@ setAddressType(String? addressType){
   setAddresss(Address? address){
     emit(state.copyWith(selectedAddress:address ));
   }
+  setIsDefault(bool? isDefault){
+    emit(state.copyWith(isDefault:isDefault??false ));
+  }
+
   ///=========Create Address============
   Future<void> createNewAddress( ) async {
 
@@ -97,7 +100,7 @@ setAddressType(String? addressType){
       cityId: state.selectedCity?.cityId??0,
       countryId: state.selectedCountry?.countryId??0,
       zipCode: postCodeCtr.text,
-      isDefault: true,
+      isDefault: state.isDefault,
     );
 
     ApiResponse apiResponse = await shoppingRepository.createAddress(addressRequest );
@@ -109,6 +112,7 @@ setAddressType(String? addressType){
          String message=apiResponse?.response?.data["message"];
          showSnackBar(message,isError: false);
          emit(state.copyWith(loading: false ));
+         clearControllers();
          Navigator.push(Get.context!, MaterialPageRoute(builder: (context)=>ShippingAddressListScreen()));
       }catch(e){
         emit(state.copyWith(loading: false));
@@ -176,7 +180,7 @@ setAddressType(String? addressType){
       cityId: state.selectedCity?.cityId??0,
       countryId: state.selectedCountry?.countryId??0,
       zipCode: postCodeCtr.text,
-      isDefault: true,
+      isDefault: state.isDefault,
     );
 
     ApiResponse apiResponse = await shoppingRepository.updateAddress(addressRequest );
@@ -302,6 +306,7 @@ setAddressType(String? addressType){
     buildingNumberCtr.clear();
     postCodeCtr.clear();
     setCity(City());
+    setIsDefault(false);
     setCountry(CountryData());
     }
 
@@ -328,7 +333,7 @@ setAddressType(String? addressType){
     City selectedCity=City(cityId: address.cityId,cityName: address.city?.cityName,arabicCityName: address.city?.arabicCityName );
     CountryData selectedCountry=CountryData(countryId: address.countryId,countryKey: address.country?.countryKey,countryName: address.country?.countryName,);
 
-    emit(state.copyWith(selectedCity:selectedCity ,selectedCountry: selectedCountry));
+    emit(state.copyWith(selectedCity:selectedCity ,selectedCountry: selectedCountry,isDefault: address.isDefault??false));
 
     AddressEditDialog.showEditBottomSheet(context: Get.context!,address: address).then((onvalue){
       clearControllers();

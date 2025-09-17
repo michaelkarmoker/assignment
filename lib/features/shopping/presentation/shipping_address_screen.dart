@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../custom_widget/custom_checkbox.dart';
 import '../../../custom_widget/custom_drop_down.dart';
 import '../../../custom_widget/custom_phoneField.dart';
 import '../../../main.dart';
@@ -235,49 +236,83 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
             ],
           ),
           SizedBox(height: 10.h,),
+          GestureDetector(
+            onTap: (){
+
+              Get.context!.read<ShoppingCubit>().setIsDefault(!state.isDefault);
+            },
+            child: Row(
+              spacing: 10.w,
+              children: [
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: CustomCheckbox(isChecked:state.isDefault,onChanged: (v){
+                    Get.context!.read<ShoppingCubit>().setIsDefault(v);
+                  }, onClicked: (v){}),
+                ),
+                Text("Set as default address",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+
+                ),)
+              ],
+            ),
+          ),
+          SizedBox(height: 10.h,),
           Row(
             children: [
               Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 25.w,
-                      child: Radio(
-                        activeColor: Theme.of(context).primaryColor,
+                child: GestureDetector(
+                  onTap: (){
 
-                          value: AddressType.existing_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
-                        Get.context!.read<ShoppingCubit>().setAddressType(value);
-                      }),
-                    ),
-                    Expanded(
-                      child: Text("Use An Existing Address",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500
-                      ),),
-                    )
-                  ],
+                    Get.context!.read<ShoppingCubit>().setAddressType(AddressType.existing_address.toString());
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 25.w,
+                        child: Radio(
+                          activeColor: Theme.of(context).primaryColor,
+
+                            value: AddressType.existing_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
+                          Get.context!.read<ShoppingCubit>().setAddressType(value);
+                        }),
+                      ),
+                      Expanded(
+                        child: Text("Use An Existing Address",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500
+                        ),),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Expanded(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 25.w,
-                      child: Radio(
+                child: GestureDetector(
+                  onTap: (){
 
-                          activeColor: Theme.of(context).primaryColor,
-                          value: AddressType.new_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
-                        Get.context!.read<ShoppingCubit>().setAddressType(value);
-                      }),
-                    ),
-                    Expanded(
-                      child: Text("Use a New Address",style:
-                      Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500
-                      )),
-                    )
-                  ],
+                    Get.context!.read<ShoppingCubit>().setAddressType(AddressType.new_address.toString());
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 25.w,
+                        child: Radio(
+
+                            activeColor: Theme.of(context).primaryColor,
+                            value: AddressType.new_address.toString(), groupValue: state.selectedAddressType, onChanged: (value) {
+                          Get.context!.read<ShoppingCubit>().setAddressType(value);
+                        }),
+                      ),
+                      Expanded(
+                        child: Text("Use a New Address",style:
+                        Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500
+                        )),
+                      )
+                    ],
+                  ),
                 ),
               ),
 
@@ -285,7 +320,8 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
 
             ],
           ),
-          SizedBox(height: 10.h,),
+
+          SizedBox(height: 15.h,),
           Row(
             spacing: 10.w,
             children: [

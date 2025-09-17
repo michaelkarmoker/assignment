@@ -1,5 +1,6 @@
 
-import 'package:canopas_country_picker/canopas_country_picker.dart';
+
+import 'package:assignment/custom_widget/custom_checkbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -205,8 +206,28 @@ class AddressEditDialog {
               
                                       ],
                                     ),
-                                    SizedBox(height: 13.h,),
-              
+                                    SizedBox(height: 10.h,),
+                                    GestureDetector(
+                                      onTap: (){
+                                        Get.context!.read<ShoppingCubit>().setIsDefault(!state.isDefault);
+                                      },
+                                      child: Row(
+                                        spacing: 10.w,
+                                        children: [
+
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 8.0),
+                                            child: CustomCheckbox(isChecked:state.isDefault,onChanged: (v){
+                                              Get.context!.read<ShoppingCubit>().setIsDefault(v);
+                                            }, onClicked: (v){}),
+                                          ),
+                                          Text("Set as default address",style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+
+                                          ),)
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 15.h,),
                                     CustomButton(
                                       width: double.infinity,
                                         loading: state.loading,
